@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://dino_user:dino_password@db:5432/dino_wallet
+      PORT: 3000
+
+  db:
+    image: postgres:17-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: dino_user
+      POSTGRES_PASSWORD: dino_password
+      POSTGRES_DB: dino_wallet
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+      - ./src/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./src/db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+volumes:
+  postgres_data_prod:
+  redis_data:
