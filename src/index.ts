@@ -1,0 +1,70 @@
+import { OpenAPIHono } from "@hono/zod-openapi";
+import { logger as honoLogger } from "hono/logger";
+import { swaggerUI } from "@hono/swagger-ui";
+import walletRoutes from "./routes/wallet";
+import webhookRoutes from "./routes/webhooks";
+import metricsRoutes from "./routes/metrics";
+import { metricsMiddleware } from "./monitoring/metrics";
+import { rateLimiter } from "./middlewares/rateLimiter";
+import { logger } from "./utils/logger";
+
+const app = new OpenAPIHono();
+
+// Middleware
+// Use custom logger for request logging
+app.use(honoLogger((str) => logger.info(str)));
+app.use("*", metricsMiddleware());
+
+// Global Rate Limiting: 1,000 requests per minute
+app.use(
+  "*",
+  rateLimiter({ windowMs: 60 * 1000, max: 1000, keyPrefix: "global" }),
+);
+
+// Stricter Rate Limiting for wallet operations: 1,000 requests per minute
+app.use(
+  "/wallet/*",
+  rateLimiter({ windowMs: 60 * 1000, max: 1000, keyPrefix: "wallet" }),
+);
+
+app.get("/", (c) => {
+  return c.json({
+    service: "Dino Wallet Service",
+    version: "1.0.0",
+    status: "running",
+    endpoints: {
+      wallet: "/wallet",
+      webhooks: "/webhooks",
+      metrics: "/metrics",
+      health: "/metrics/health",
+      swagger: "/swagger",
+      docs: "/doc",
+    },
+  });
+});
+
+// Routes
+app.route("/wallet", walletRoutes);
+app.route("/webhooks", webhookRoutes);
+app.route("/metrics", metricsRoutes);
+
+// OpenAPI spec endpoint
+app.doc("/doc", {
+  openapi: "3.0.0",
+  info: {
+    version: "1.0.0",
+    title: "Wallet Service API",
+    description:
+      "API for managing user wallets, transactions, webhooks, and metrics",
+  },
+});
+
+// Swagger UI
+app.get(
+  "/swagger",
+  swaggerUI({
+    url: "/doc",
+  }),
+);
+
+export default app;
