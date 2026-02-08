@@ -67,4 +67,11 @@ app.get(
   }),
 );
 
-export default app;
+const port = process.env.PORT || 3000;
+
+logger.info(`Server is starting on port ${port}`);
+
+export default {
+  port,
+  fetch: app.fetch,
+};

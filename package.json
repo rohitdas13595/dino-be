@@ -12,7 +12,8 @@
     "test:coverage": "bun test --coverage",
     "migrate:up": "node-pg-migrate up",
     "migrate:down": "node-pg-migrate down",
-    "migrate:create": "node-pg-migrate create"
+    "migrate:create": "node-pg-migrate create",
+    "start": "bun run migrate:up && bun run src/index.ts"
   },
   "dependencies": {
     "@hono/swagger-ui": "^0.5.3",
