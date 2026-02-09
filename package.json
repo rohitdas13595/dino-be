@@ -1,6 +1,7 @@
 {
   "name": "dino-be",
   "type": "module",
+  "version": "1.0.0",
   "scripts": {
     "dev": "bun run migrate:up && bun run --hot src/index.ts",
     "test": "bun test",
