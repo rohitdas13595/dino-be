@@ -11,14 +11,15 @@
     "test:ledger": "bun test tests/ledger",
     "test:watch": "bun test --watch",
     "test:coverage": "bun test --coverage",
-    "migrate:up": "bun node-pg-migrate up",
-    "migrate:down": "bun node-pg-migrate down",
-    "migrate:create": "bun node-pg-migrate create",
+    "migrate:up": "bun node-pg-migrate --tsx up",
+    "migrate:down": "bun node-pg-migrate --tsx down",
+    "migrate:create": "bun node-pg-migrate --tsx create",
     "start": "bun run migrate:up && bun run src/index.ts"
   },
   "dependencies": {
     "@hono/swagger-ui": "^0.5.3",
     "@hono/zod-openapi": "^1.2.1",
+    "config": "^4.2.0",
     "decimal.js": "^10.6.0",
     "dotenv": "^17.2.4",
     "dotenv-expand": "^12.0.3",
@@ -29,6 +30,8 @@
     "pino": "^10.3.0",
     "pino-pretty": "^13.1.3",
     "postgres": "^3.4.8",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
