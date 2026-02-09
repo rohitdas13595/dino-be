@@ -1,10 +1,10 @@
-# 🦖 Dino Wallet Service
+# Dino Wallet Service
 
 A high-performance, S-Tier financial microservice for managing virtual assets (Gold, Diamonds, Loyalty Points) with absolute precision. Built on **Bun**, **Hono**, and **PostgreSQL**.
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 - **Double-Entry Ledger**: Mathematical integrity for every transaction with a full audit trail.
 - **High Concurrency**: Handles concurrent race conditions and prevents deadlocks using multi-level locking (Row-level + Advisory locks).
@@ -15,7 +15,7 @@ A high-performance, S-Tier financial microservice for managing virtual assets (G
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Prerequisites
 
@@ -55,7 +55,7 @@ The service will be available at [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## 📖 Documentation
+## Documentation
 
 For deep technical dives, please refer to:
 
@@ -65,7 +65,7 @@ For deep technical dives, please refer to:
 
 ---
 
-## 🛠️ Commands Reference
+## Commands Reference
 
 | Task                 | Command                               |
 | :------------------- | :------------------------------------ |
@@ -78,7 +78,7 @@ For deep technical dives, please refer to:
 
 ---
 
-## 🔬 Core Technologies
+## Core Technologies
 
 - **Runtime**: Bun
 - **Framework**: Hono (Zod OpenAPI)
@@ -87,5 +87,3 @@ For deep technical dives, please refer to:
 - **Logging**: Pino
 
 ---
-
-_Developed with precision for accurate virtual economies._

@@ -10,18 +10,13 @@ import { logger } from "./utils/logger";
 
 const app = new OpenAPIHono();
 
-// Middleware
-// Use custom logger for request logging
 app.use(honoLogger((str) => logger.info(str)));
 app.use("*", metricsMiddleware());
 
-// Global Rate Limiting: 1,000 requests per minute
 app.use(
   "*",
   rateLimiter({ windowMs: 60 * 1000, max: 1000, keyPrefix: "global" }),
 );
-
-// Stricter Rate Limiting for wallet operations: 1,000 requests per minute
 app.use(
   "/wallet/*",
   rateLimiter({ windowMs: 60 * 1000, max: 1000, keyPrefix: "wallet" }),
@@ -43,12 +38,10 @@ app.get("/", (c) => {
   });
 });
 
-// Routes
 app.route("/wallet", walletRoutes);
 app.route("/webhooks", webhookRoutes);
 app.route("/metrics", metricsRoutes);
 
-// OpenAPI spec endpoint
 app.doc("/doc", {
   openapi: "3.0.0",
   info: {
@@ -59,7 +52,6 @@ app.doc("/doc", {
   },
 });
 
-// Swagger UI
 app.get(
   "/swagger",
   swaggerUI({

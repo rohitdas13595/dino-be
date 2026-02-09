@@ -1,13 +1,6 @@
-# Justfile for Dino Wallet Service
-# Run with: just <recipe>
-# List all recipes: just --list
-
-# Default recipe - show help
+# Default - show help
 default:
     @just --list
-
-# Installation and Setup
-# =====================
 
 # Install all dependencies
 install:
@@ -15,14 +8,11 @@ install:
 
 # Initial project setup (install + start services)
 setup: install docker-up
-    @echo "✅ Setup complete! Run 'just dev' to start development"
+    @echo "Setup complete! Run 'just dev' to start development"
 
 # Setup production environment
 setup-prod: docker-up-prod
-    @echo "✅ Production environment started!"
-
-# Development
-# ===========
+    @echo "Production environment started!"
 
 # Start development server with hot reload
 dev:
@@ -35,9 +25,6 @@ build:
 # Watch mode - restart on file changes
 watch:
     bun run --watch src/index.ts
-
-# Testing
-# =======
 
 # Run all tests
 test:
@@ -75,9 +62,6 @@ test-file FILE:
 quick-test: docker-up
     @sleep 3
     bun test
-
-# Docker Management
-# =================
 
 # Start all services (development)
 docker-up:
@@ -133,10 +117,7 @@ docker-build-prod:
 
 # Rebuild and restart services
 docker-rebuild: docker-down docker-build docker-up
-    @echo "✅ Services rebuilt and restarted"
-
-# Database Commands
-# =================
+    @echo "Services rebuilt and restarted"
 
 # Open PostgreSQL shell
 db-shell:
@@ -146,21 +127,21 @@ db-shell:
 db-reset:
     docker-compose down -v
     docker-compose up -d db
-    @echo "⏳ Waiting for database to be ready..."
+    @echo "Waiting for database to be ready..."
     @sleep 5
-    @echo "✅ Database reset complete!"
+    @echo "Database reset complete!"
 
 # Backup database to file
 db-backup:
     #!/usr/bin/env bash
     TIMESTAMP=$(date +%Y%m%d_%H%M%S)
     docker-compose exec -T db pg_dump -U dino_user dino_wallet > backup_${TIMESTAMP}.sql
-    echo "✅ Backup saved to backup_${TIMESTAMP}.sql"
+    echo "Backup saved to backup_${TIMESTAMP}.sql"
 
 # Restore database from backup
 db-restore FILE:
     docker-compose exec -T db psql -U dino_user dino_wallet < {{ FILE }}
-    @echo "✅ Database restored from {{ FILE }}"
+    @echo "Database restored from {{ FILE }}"
 
 # Check database connection
 db-check:
@@ -177,12 +158,9 @@ db-tables:
 # Count transactions
 db-stats:
     #!/usr/bin/env bash
-    echo "📊 Database Statistics:"
+    echo "Database Statistics:"
     echo ""
     docker-compose exec db psql -U dino_user -d dino_wallet -c "SELECT 'Transactions' as table, COUNT(*) as count FROM transactions UNION ALL SELECT 'Ledger Entries', COUNT(*) FROM ledger_entries UNION ALL SELECT 'Wallets', COUNT(*) FROM wallets;"
-
-# Code Quality
-# ============
 
 # Run TypeScript type checking
 lint:
@@ -199,9 +177,6 @@ format-check:
 # Run linter and tests
 check: lint test
 
-# Utility Commands
-# ================
-
 # Open Swagger UI in browser
 swagger:
     @echo "🔗 Opening Swagger UI at http://localhost:3000/swagger"
@@ -214,7 +189,7 @@ api-doc:
 # Check service health
 health:
     #!/usr/bin/env bash
-    echo "🏥 Health Check:"
+    echo "Health Check:"
     echo ""
     echo -n "Database: "
     docker-compose exec db pg_isready -U dino_user && echo "✅ Ready" || echo "❌ Not ready"
@@ -223,7 +198,7 @@ health:
 
 # Show status of all services
 status:
-    @echo "📊 Service Status:"
+    @echo "Service Status:"
     @echo ""
     docker-compose ps
     @echo ""
@@ -251,23 +226,20 @@ clean-volumes:
 # Quick start - start services and dev server
 quick-start: docker-up
     @sleep 2
-    @echo "✅ Services started, launching dev server..."
+    @echo "Services started, launching dev server..."
     just dev
 
 # Full rebuild - clean, install, and start everything
 rebuild: clean install docker-rebuild
-    @echo "✅ Full rebuild complete!"
+    @echo "Full rebuild complete!"
 
 # Run pre-commit checks
 pre-commit: format lint test
-    @echo "✅ Pre-commit checks passed!"
+    @echo "Pre-commit checks passed!"
 
 # Prepare for production deployment
 prepare-prod: clean install test docker-build-prod
-    @echo "✅ Ready for production deployment!"
-
-# Monitoring & Debugging
-# ======================
+    @echo "Ready for production deployment!"
 
 # Show recent database logs
 db-recent-logs:
@@ -281,9 +253,6 @@ db-monitor:
 db-connections:
     docker-compose exec db psql -U dino_user -d dino_wallet -c "SELECT count(*) as connections FROM pg_stat_activity;"
 
-# Performance Testing
-# ===================
-
 # Run load tests (requires k6)
 load-test:
     #!/usr/bin/env bash
@@ -291,31 +260,31 @@ load-test:
         k6 run tests/performance/load.k6.js
 
     else
-        echo "❌ k6 not installed. Install from https://k6.io"
+        echo "k6 not installed. Install from https://k6.io"
     fi
 
 # Benchmark API endpoints
 benchmark:
     #!/usr/bin/env bash
-    echo "🚀 Benchmarking API endpoints..."
+    echo "Benchmarking API endpoints..."
     if command -v autocannon >/dev/null 2>&1; then
         autocannon -c 100 -d 10 http://localhost:3000/
     else
-        echo "❌ autocannon not installed. Run: npm install -g autocannon"
+        echo "autocannon not installed. Run: npm install -g autocannon"
     fi
-
-# Development Helpers
-# ===================
 
 # Create a new migration file
 new-migration NAME:
     @echo "Creating migration: {{ NAME }}"
     @touch "migrations/$(date +%Y%m%d%H%M%S)_{{ NAME }}.sql"
-    @echo "✅ Migration file created"
+    @echo "Migration file created"
+
+run-migration:
+    bun run migrate:up
 
 # Show project info
 info:
-    @echo "📦 Dino Wallet Service"
+    @echo "Dino Wallet Service"
     @echo ""
     @echo "Runtime: Bun $(bun --version)"
     @echo "Node Modules: $(find node_modules -maxdepth 0 -type d 2>/dev/null | wc -l) packages"
