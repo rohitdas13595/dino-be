@@ -2,6 +2,7 @@
 
 A high-performance, S-Tier financial microservice for managing virtual assets (Gold, Diamonds, Loyalty Points) with absolute precision. Built on **Bun**, **Hono**, and **PostgreSQL**.
 
+Deployment: https://dino-be-production.up.railway.app
 ---
 
 ## Key Features
@@ -69,8 +70,8 @@ For deep technical dives, please refer to:
 
 | Task                 | Command                               |
 | :------------------- | :------------------------------------ |
-| **All Tests**        | `make test`                           |
-| **Load Test**        | `make load-test`                      |
+| **All Tests**        | `just test`                           |
+| **Load Test**        | `just load-test`                      |
 | **Coverage**         | `bun test --coverage`                 |
 | **Migration Create** | `npm run migrate:create -- name`      |
 | **Migration Up**     | `bun run migrate:up`                  |
